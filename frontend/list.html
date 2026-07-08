@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>瀏覽清單 - 溯食光 Food Trace</title>
+<meta name="description" content="溯食光 FoodTrace — 瀏覽 brand、公司、大類或收藏的產品清單。" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries&v=list-v3"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          "surface-variant":"#eef2e9","error":"#a63f32","surface-bright":"#fafbf7",
+          "on-secondary":"#ffffff","on-error-container":"#93000a","primary-fixed":"#e4efd8",
+          "on-surface":"#20251d","primary":"#5b7844","surface-container-high":"#e8ede4",
+          "inverse-surface":"#35302c","secondary-container":"#fd983e","surface-tint":"#5b7844",
+          "on-primary-fixed":"#1d2b17","on-primary":"#ffffff","tertiary":"#894c57",
+          "secondary":"#a85b0d","surface":"#fafbf7","on-surface-variant":"#465043",
+          "text-main":"#283227","on-secondary-fixed":"#2f1500","outline":"#6f7a6a",
+          "on-secondary-fixed-variant":"#6e3900","surface-dim":"#e1e7dd",
+          "primary-fixed-dim":"#b8d29d","on-tertiary":"#ffffff","disclaimer-surface":"#FFFBEB",
+          "on-error":"#ffffff","text-muted":"#667061","inverse-on-surface":"#f9f6f3",
+          "on-secondary-container":"#693600","on-primary-container":"#24391b",
+          "inverse-primary":"#b8d29d","error-container":"#ffdad6","border-light":"#dce6d5",
+          "secondary-fixed":"#ffdcc3","surface-container-low":"#f3f6f0",
+          "surface-container":"#eef2e9","background":"#fafbf7","on-background":"#20251d",
+          "surface-container-lowest":"#ffffff","warning-surface":"#FFF4ED",
+          "tertiary-container":"#c57f8a","outline-variant":"#d5c9c0",
+          "surface-container-highest":"#e5e1dc","secondary-fixed-dim":"#ffb77e",
+          "primary-container":"#e8f0e2","on-primary-fixed-variant":"#476136",
+          "warning":"#92550d","on-tertiary-container":"#4c1b25","tertiary-fixed":"#ffd9dd",
+          "on-tertiary-fixed":"#380b16","on-tertiary-fixed-variant":"#6d3640",
+          "tertiary-fixed-dim":"#ffb2bd"
+        },
+        fontFamily: { sans: ["Noto Sans TC","sans-serif"] },
+        fontSize: {
+          "headline-lg":["24px",{lineHeight:"32px",fontWeight:"700"}],
+          "headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}],
+          "headline-sm":["18px",{lineHeight:"26px",fontWeight:"600"}],
+          "body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],
+          "body-md":["14px",{lineHeight:"22px",fontWeight:"400"}],
+          "label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],
+          "label-md":["12px",{lineHeight:"16px",fontWeight:"500"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #fafbf7; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+</style>
+</head>
+<body data-page="list" class="bg-background text-on-surface min-h-screen font-sans">
+  <!-- TopAppBar -->
+  <header class="fixed top-0 left-0 right-0 h-14 z-40 flex items-center px-4 sm:px-6 bg-surface/90 backdrop-blur-md border-b border-border-light">
+    <a data-back-button href="#" onclick="event.preventDefault(); history.length > 1 ? history.back() : location.href='index.html'" class="p-2 hover:bg-surface-container-high rounded-full text-primary mr-2" aria-label="返回上一頁">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <div data-brand-header class="flex items-center gap-2 flex-none shrink-0"></div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="mt-14 pb-24 px-4 sm:px-6 max-w-4xl mx-auto w-full flex-grow">
+
+    <!-- Page Title Row -->
+    <section id="list-title-section" class="pt-5 pb-3 flex items-start justify-between gap-2">
+      <div class="flex-grow min-w-0">
+        <h1 id="list-main-title" class="text-2xl font-bold text-on-surface leading-tight truncate">清單</h1>
+        <p id="list-main-subtitle" class="text-sm text-text-muted mt-0.5 truncate hidden"></p>
+      </div>
+      <span id="list-title-count" data-title-count class="hidden text-xs text-text-muted bg-surface-container px-2.5 py-1 rounded-full font-medium shrink-0 self-start mt-1.5"></span>
+    </section>
+
+    <!-- Search Bar -->
+    <section class="relative pb-4">
+      <form data-search-form class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3.5 text-text-muted text-[22px] pointer-events-none">search</span>
+        <input
+          data-search-input
+          type="search"
+          placeholder="搜尋…"
+          class="w-full h-11 pl-10 pr-10 rounded-2xl border border-border-light bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all text-sm text-on-surface placeholder-text-muted"
+          autocomplete="off"
+        />
+        <button
+          data-clear-search
+          type="button"
+          aria-label="清除搜尋"
+          class="hidden absolute right-3 items-center justify-center text-text-muted hover:text-on-surface transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Result Header (hidden until user types for favorites; shown immediately for others) -->
+    <div data-result-header class="hidden flex items-center justify-between mb-3 px-1">
+      <h2 data-result-heading class="text-sm font-semibold text-on-surface-variant">探索結果</h2>
+      <span data-result-count class="text-xs text-text-muted bg-surface-container px-2.5 py-1 rounded-full font-medium">0 筆結果</span>
+    </div>
+
+    <!-- List Content Grid -->
+    <section data-list-content class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="col-span-full py-16 flex justify-center items-center">
+        <div class="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 px-6 pb-28 flex flex-col items-center gap-3 bg-surface-container-low border-t border-border-light">
+    <p class="text-label-md text-text-muted text-center">© <span class="year-footer">2026</span> 溯食光 Food Trace．所有資料僅供參考。</p>
+    <div class="flex gap-6">
+      <a class="text-label-md text-text-muted hover:text-primary hover:underline transition-all" href="#">資料說明及免責聲明</a>
+    </div>
+  </footer>
+
+  <!-- Bottom Navigation (always visible) -->
+  <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 w-full z-50 flex justify-around items-center px-2 py-1.5 bg-surface/95 backdrop-blur-md border-t border-border-light shadow-[0_-4px_24px_rgba(0,0,0,0.06)] min-h-[60px]">
+    <a id="nav-home" class="flex flex-col items-center justify-center px-4 py-2 rounded-2xl text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-90" href="#">
+      <span class="material-symbols-outlined text-[22px]">home</span>
+      <span class="text-[10px] font-medium mt-0.5">首頁</span>
+    </a>
+    <a id="nav-categories" class="flex flex-col items-center justify-center px-4 py-2 rounded-2xl text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-90" href="#">
+      <span class="material-symbols-outlined text-[22px]">category</span>
+      <span class="text-[10px] font-medium mt-0.5">大類</span>
+    </a>
+    <a id="nav-brands" class="flex flex-col items-center justify-center px-4 py-2 rounded-2xl text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-90" href="#">
+      <span class="material-symbols-outlined text-[22px]">storefront</span>
+      <span class="text-[10px] font-medium mt-0.5">品牌</span>
+    </a>
+
+    <a id="nav-favorites" class="flex flex-col items-center justify-center px-4 py-2 rounded-2xl text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-90" href="#">
+      <span class="material-symbols-outlined text-[22px]">favorite</span>
+      <span class="text-[10px] font-medium mt-0.5">收藏</span>
+    </a>
+  </nav>
+
+  <script src="shared.js?v=no-sidebar" defer></script>
+</body>
+</html>

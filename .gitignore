@@ -1,0 +1,29 @@
+# Python 虛擬環境
+.venv/
+venv/
+env/
+
+# Python 快取與編譯檔
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 個人/隱私/本機資料庫
+backend/output/user_data.db
+backend/output/user_data.db-shm
+backend/output/user_data.db-wal
+
+# 原始大資料檔 (88MB)
+backend/data/188_5.json
+
+# 資料審計臨時產生的報告目錄
+reports/
+
+# 編輯器與系統設定檔
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
